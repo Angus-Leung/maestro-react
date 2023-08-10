@@ -1,0 +1,7 @@
+{
+  "components": [
+    { "key": "receipt-type-radio-group", "label": "Select one", "options": ["Gas/Petrol", "Return Slip", "Credit Card Slip"], "type": "radioGroup" },
+    { "key": "total-input", "text": "Total", "type": "priceInput" },
+    { "key": "store-phone-input", "text": "Store Phone No", "type": "priceInput" }
+  ]
+}

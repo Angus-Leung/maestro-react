@@ -1,0 +1,26 @@
+.dynamic-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 20px;
+  width: calc(100% - 40px) ;
+}
+
+.dynamic-component {
+  min-width: 400px;
+}
+
+.submit-btn {
+  background-color: white;
+  border: 1px solid #00e36b;
+  border-radius: 3px;
+  color: green;
+  height: 40px;
+  width: 120px;
+
+  &:hover {
+    background-color: #00e36b;
+    cursor: pointer;
+  }
+}

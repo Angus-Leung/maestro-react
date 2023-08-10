@@ -1,0 +1,45 @@
+{
+  "components": [
+    { "key": "dropdown-input",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "text": "What was the date?",
+      "type": "dropdownInput"
+    },
+    { "columns": [
+      {
+        "name": "ID",
+        "type": "number"
+      },
+      {
+        "editable": true,
+        "name": "Type",
+        "type": "string"
+      },
+      {
+        "editable": true,
+        "name": "QTY",
+        "type": "string"
+      },
+      {
+        "editable": true,
+        "name": "ItemDescription",
+        "type": "string",
+        "width": 250
+      },
+      {
+        "editable": true,
+        "name": "Price",
+        "type": "string"
+      }
+    ],
+    "key": "table-input",
+    "type": "tableInput"
+  },
+  { "key": "subtotal-input", "text": "Subtotal", "type": "priceInput" },
+  { "key": "total-input", "text": "Total", "type": "priceInput" }
+  ]
+}
