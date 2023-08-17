@@ -7,11 +7,11 @@ import Checkbox from '@mui/material/Checkbox';
 import WarningIcon from '@mui/icons-material/Warning';
 import Tooltip from '@mui/material/Tooltip';
 import styles from './App.module.scss'
-import testTemplate from './testTemplate.json';
-import testTemplate2 from './testTemplate2.json';
+import testTemplate3 from './testTemplate3.json';
+import testTemplate4 from './testTemplate4.json';
 import testData from './testData.json';
 import { createContext } from 'react';
-const FormContext = createContext(null);
+export const FormContext = createContext(null);
 
 const theme = createTheme({
   palette: {
@@ -25,23 +25,40 @@ const theme = createTheme({
   },
 });
 
+
 const App = () => {
   const [data, setData] = useState({});
-  const [formData, setFormData] = useState({});
   const [isReadableReceipt, setIsReadableReceipt] = useState(true);
-  const [template, setTemplate] = useState([]);
+  const [components, setComponents] = useState([]);
   const [imgNum, setImgNum] = useState(0);
 
   useEffect(() => {
     setData(testData.data);
-    setTemplate(testTemplate.components);
+    const componentsCopy = JSON.parse(JSON.stringify(testTemplate4.components));
+    setComponents(componentsCopy);
   }, [])
 
   const handleFormSubmit = () => {
     setImgNum(getRandomInt(6));
-    setFormData({});
-    console.log(formData)
+    console.log(components);
+
+    //reset
+    const componentsCopy = JSON.parse(JSON.stringify(testTemplate4.components));
+    setComponents(componentsCopy);
   };
+
+  const handleChange = (id, value) => {
+    const newComponents =  [...components]
+
+    newComponents.forEach(field => {
+      const { field_type, field_id } = field;
+      if (id === field_id) {
+        field['field_value'] = value;
+      }
+
+      setComponents(newComponents)
+    });
+  }
 
   const imgArr = [
     "https://d1kc7dadkq6rvs.cloudfront.net/receipts/3abbce7b06c544d7a9d3bc82df3ab6ce.processing.jpeg",
@@ -59,7 +76,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <FormContext.Provider value="Reed">
+      <FormContext.Provider value={{ handleChange }}>
         <div className={styles['app']}>
           <div className={styles['image-container']}>
             <img className={styles['image']} src={imgArr[imgNum]} alt="receipt"/>
@@ -82,7 +99,10 @@ const App = () => {
                   <FormControlLabel control={<Checkbox checked={!isReadableReceipt} onChange={(e) => setIsReadableReceipt(!e.target.checked)} />} label="Not a readable receipt" />
                 </FormGroup>
               </div>
-              <DynamicForm inputComponents={template} formData={formData} handleFormSubmit={handleFormSubmit} setFormData={setFormData} />
+              <DynamicForm
+                inputComponents={components}
+                handleFormSubmit={handleFormSubmit}
+              />
             </div>
           </div>
         </div>

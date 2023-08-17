@@ -1,10 +1,8 @@
 import styles from './_index.module.scss';
-import PriceInput from '../../components/PriceInput';
+import TextInput from '../../components/TextInput';
 import RadioButtonGroup from '../../components/RadioButtonGroup';
 import TableInput from '../../components/TableInput';
-import { useGridApiRef } from '@mui/x-data-grid';
 import DropdownSelect from '../../components/DropdownSelect';
-import _ from 'lodash';
 
 const formatColumns = (rawColumns) => {
   const formattedColumns = rawColumns.map((column) => {
@@ -19,52 +17,49 @@ const formatColumns = (rawColumns) => {
   return formattedColumns;
 }
 
-const DynamicForm = ({ inputComponents, handleFormSubmit, setFormData }) => {
-
-  const handleInputChange = (id, value) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [id]: value,
-    }));
-  };
-
-  const apiRef = useGridApiRef();
-
-  const handleSubmit = async () => {
-    // Get table data
-    if (Object.keys(apiRef.current).length !== 0) {
-      const rowIds = apiRef.current.getAllRowIds();
-      const rowData = [];
-      for (let id in rowIds) {
-        rowData.push(apiRef.current.getRow(id));
-      }
-
-      await setFormData((prevFormData) => ({
-        ...prevFormData,
-        'table-input': rowData,
-      }));
-    }
-    handleFormSubmit();
-
-  }
+const DynamicForm = ({ inputComponents, handleFormSubmit }) => {
 
   return (
     <div className={styles['dynamic-form']}>
-      {inputComponents.map((input, index) => {
-        switch (input.type) {
-          case 'dropdownInput':
-            return <DropdownSelect id={input.key} key={input.key} onChange={handleInputChange} options={input.options} text={input.text}/>
-          case 'priceInput':
-            return <PriceInput id={input.key} key={input.key} onChange={handleInputChange} text={input.text}/>
-          case 'radioGroup':
-            return <RadioButtonGroup id={input.key} key={input.key} label={input.label} onChange={handleInputChange} options={input.options}/>
-          case 'tableInput':
-            return <TableInput apiRef={apiRef} columns={formatColumns(input.columns)} id={input.key} key={input.key} />
+      {inputComponents.map((component, index) => {
+        switch (component.field_type) {
+          case 'dropdown':
+            return <DropdownSelect
+                    id={component.field_id}
+                    key={component.field_id}
+                    options={component.field_options}
+                    placeholder={component.field_placeholder}
+                    text={component.field_label}
+                    value={component.field_value}
+                    />
+          case 'text':
+            return <TextInput
+                    id={component.field_id}
+                    key={component.field_id}
+                    placeholder={component.field_placeholder ? component.field_placeholder : ''}
+                    text={component.field_label}
+                    value={component.field_value}
+                  />
+          case 'radio_group':
+            return <RadioButtonGroup
+                    id={component.field_id}
+                    key={component.field_id}
+                    label={component.field_label}
+                    options={component.field_options}
+                    value={component.field_value}
+                  />
+          case 'table':
+            return <TableInput
+                    columns={formatColumns(component.field_columns)}
+                    id={component.field_id}
+                    key={component.field_id}
+                    value={component.field_value}
+                   />
           default:
             return null;
         }
       })}
-      <button className={styles['submit-btn']} onClick={handleSubmit}>Submit</button>
+      <button className={styles['submit-btn']} onClick={handleFormSubmit}>Submit</button>
     </div>
   );
 };

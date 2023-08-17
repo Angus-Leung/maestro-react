@@ -1,49 +1,29 @@
-import {useState, useCallback, useEffect} from 'react';
+import { useContext} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { FormContext } from '../../App';
 
-const TableInput = ({ apiRef, columns, id }) => {
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    const emptyRows = [];
-    for (let i=0; i < 5; i++) {
-      let row = {}
-      columns.forEach(column => {
-        if (column.field === 'id') {
-          row[column.field] = i;
-        } else {
-          row[column.field] = ''
-        }
-      })
-      emptyRows.push(row);
-    }
-    setRows(emptyRows);
-  }, [columns])
-
-  const handleProcessRowUpdate = useCallback((updatedRow, originalRow) => {
-    // Find the index of the row that was edited
-    const rowIndex = rows.findIndex((row) => row.id === updatedRow.id);
-
-    // Replace the old row with the updated row
-    const updatedRows = [...rows];
-    updatedRows[rowIndex] = updatedRow;
-
-    // Update the state with the new rows
-    setRows(updatedRows);
-
-    // Return the updated row to update the internal state of the DataGrid
-    return updatedRow;
-  }, [rows]);
+const TableInput = (props) => {
+  const { handleChange } = useContext(FormContext)
 
   return (
     <div>
       <DataGrid
-        apiRef={apiRef}
-        columns={columns}
+        columns={props.columns}
         editMode='row'
-        processRowUpdate={handleProcessRowUpdate}
-        onProcessRowUpdateError={(err) => console.log(err)}
-        rows={rows}
+        processRowUpdate={(updatedRow, originalRow) => {
+            const currentRows = JSON.parse(JSON.stringify(props.value));
+            const newRows = currentRows.map((row) => {
+              if (row.id === updatedRow.id) {
+                return updatedRow;
+              } else {
+                return row;
+              }
+            })
+            handleChange(props.id, newRows);
+          }
+        }
+        onProcessRowUpdateError={() => {return }}
+        rows={props.value}
       />
     </div>
   )
